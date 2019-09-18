@@ -11,7 +11,7 @@ import Todos from "../components/Todos";
 import AddTodo from "../components/AddTodo";
 
 const baseUrl = "https://jsonplaceholder.typicode.com/todos";
-const todoLimit = `?_limit=10`;
+const todoLimit = `limit=10`;
 
 export default {
   name: "home",
@@ -24,22 +24,26 @@ export default {
       todos: []
     };
   },
+
   methods: {
-    deleteTodo(id) {
-      Axios.delete(`${baseUrl}/${id}`)
-        .then(res => (this.todos = this.todos.filter(todo => todo.id !== id)))
-        .catch(err => console.log(err));
-    },
     addTodo(todo) {
       Axios.post(`${baseUrl}`, todo)
         .then(res => (this.todos = [res.data, ...this.todos]))
         .catch(err => console.log(err));
+    },
+    getTodos() {
+      Axios.get(`${baseUrl}?_${todoLimit}`)
+        .then(res => (this.todos = res.data))
+        .catch(err => console.log(err));
+    },
+    deleteTodo(id) {
+      Axios.delete(`${baseUrl}/${id}`)
+        .then(res => (this.todos = this.todos.filter(todo => todo.id !== id)))
+        .catch(err => console.log(err));
     }
   },
   created() {
-    Axios.get("https://jsonplaceholder.typicode.com/todos?_limit=10")
-      .then(res => (this.todos = res.data))
-      .catch(err => console.log(err));
+    this.getTodos();
   }
 };
 </script>
